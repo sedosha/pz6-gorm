@@ -14,13 +14,47 @@
 
 Также выполнен деплой на удаленный сервер.
 
-Требования к отчёту
-1.	Краткое описание, зачем ORM и чем помог GORM (3–5 предложений).
-2.	Скриншоты:
-	curl/Postman: создание пользователя, создание заметки, получение заметки (с автором и тегами).
-	Фрагмент схемы БД (скриншот из psql \d или любой GUI).
-3.	Ссылка на репозиторий (минимум: go.mod, исходники, README с примером DB_DSN).
-4.	Пара строк о проблемах и как вы их решили.
+1.	ORM сопоставлет объектно-ориентированные сущности программы с таблицами реляционной базы данных. Проце говоря,	мы пишем код «в терминах структур и методов», а ORM формирует SQL-запросы. GORM — это самая популярная ORM-библиотека на языке Go. Вместо 200+ строк на SQL удалось написать всего ~50 строк на Go для такого же функционала. Помимо этого, GORM помог автоматизировать создание и изменение таблиц с помощью миграций и упростил настройку связей между таблицами. 
+2.	Скриншоты (localhost):
+   - запуск сервера (создание таблиц)
+   - <img width="1280" height="880" alt="image" src="https://github.com/user-attachments/assets/0e69b82a-7bb2-4bff-9320-192695eae4dc" />
+
+   - создание пользователя
+   - <img width="1280" height="594" alt="image" src="https://github.com/user-attachments/assets/8be9fcc6-3f09-4e08-901e-2c2dc86ac10a" />
+
+   - создание заметки
+   - <img width="1280" height="930" alt="image" src="https://github.com/user-attachments/assets/cdcc14ec-08f1-42f3-8343-c4c502be2687" />
+
+   - получение заметки
+   - <img width="1280" height="868" alt="image" src="https://github.com/user-attachments/assets/f0488e86-9d5b-4c66-981d-6ee4f807ed1a" />
+
+3. Скриншоты после деплоя на удаленный сервер:
+   - создание пользователя
+   - <img width="1280" height="680" alt="image" src="https://github.com/user-attachments/assets/c34d24c7-86d6-41f2-a2f5-7423ca74fe27" />
+  
+   - создание заметки
+   - <img width="1280" height="932" alt="image" src="https://github.com/user-attachments/assets/5906f43e-7026-497d-b244-8317715f434e" />
+
+   - получение заметки
+   - <img width="1280" height="927" alt="image" src="https://github.com/user-attachments/assets/41fbe268-d400-459a-8cdf-44e8a27f94f9" />
+
+4. Фрагменты схемы БД:
+   - <img width="1199" height="994" alt="image" src="https://github.com/user-attachments/assets/6e6567ce-2a95-4476-b63b-59da97636a0d" />
+   - <img width="1187" height="536" alt="image" src="https://github.com/user-attachments/assets/10a62880-5c29-4649-a8a8-c9da9a43f8c2" />
+
+5.	Используемый DB_DSN:
+   ```
+  	DB_DSN=host=localhost user=gorm_user password=4471716 dbname=pz6_gorm port=5432 sslmode=disable
+   ```
+6.	Возникшие проблемы и их решения.
+   Я столкнулась с проблемами, когда переносила проект на удаленный сервер.
+   - Первая проблема: приложение работало при ручном запуске, но не работало через systemd с ошибкой "failed to connect to user=root database=: password authentication failed for user "root"". Решение: для чтения переменных окружения пришлось использовать отдельный файл с переменными окружения "/etc/pz6-gorm.conf".
+   -  Приложение не могло запуститься на порту 8080, т.к. он был занят Apsche2. Решение: перевела приложение на порт 8081
+   - Была путаница с паролями от бд и от пользователя)
+   - Приложение работало локально, но было недоступно с внешних IP. Решение: Открыла порт в фаерволе 8081.
+7. Для проверки:
+- http://37.230.117.32:8081/health
+- http://37.230.117.32:8081/notes/1
 
 Контрольные вопросы
 1.	Что такое ORM и зачем она нужна, если есть database/sql? Приведите 2–3 плюса и 1–2 минуса.
